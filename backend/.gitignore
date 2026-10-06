@@ -1,3 +1,6 @@
+// これは prisma の自動生成ファイルを無視するための設定です。 prisma は膨大な量のファイルを生成するため、これらを Git に含める必要はありません。
+
 node_modules/
 .env
 dist/
+/src/generated/prisma
