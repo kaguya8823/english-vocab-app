@@ -5,6 +5,7 @@
 
 generator client {
   provider = "prisma-client"
+  output   = "../src/generated/prisma"
 }
 
 datasource db {
@@ -16,7 +17,7 @@ model Vocabulary {
   word            String
   meaning         String
   exampleSentence String?
-  postOfSpeech    String
+  partOfSpeech    String  @map("postOfSpeech")
   examLevel       String?
 
   createdAt DateTime @default(now())

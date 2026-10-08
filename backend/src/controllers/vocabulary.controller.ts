@@ -36,7 +36,6 @@ export const createVocabulary = async (
             message: "Failed to create vocabulary",
         })
     }
-    res.json({ message: "Create a new vocabulary" });
 };
 
 export const getVocabularyById = async (
