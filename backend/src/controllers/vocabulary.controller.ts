@@ -1,10 +1,7 @@
 import { Request, Response } from 'express';
 
 import {
-    getAllVocabularyService
-} from '../services/vocabulary.service';
-
-import {
+    getAllVocabularyService,
     createVocabularyService
 } from '../services/vocabulary.service';
 
@@ -13,12 +10,12 @@ export const getAllVocabularies = async (
     res: Response
 ) => {
     try {
-        const vocabularies = 
+        const vocabularies =
             await getAllVocabularyService();
         
         res.json(vocabularies);
     } catch (error) {
-        res.status(500).json({ error: 'Failed to fetch vocabularies' });
+        res.status(500).json({ message: 'Server error'});
     }
 };
 
@@ -30,11 +27,8 @@ export const createVocabulary = async (
         const vocabulary =
             await createVocabularyService(req.body);
         res.status(201).json(vocabulary);
-    
     } catch(error) {
-        res.status(500).json({
-            message: "Failed to create vocabulary",
-        })
+        res.status(500).json({ message: 'Server Error'});
     }
 };
 
