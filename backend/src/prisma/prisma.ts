@@ -1,3 +1,5 @@
+// ここの記述は Prisma7 系の記述。６以前よりだいぶ異なる
+
 import 'dotenv/config';
 import { PrismaMariaDb } from '@prisma/adapter-mariadb';
 import { PrismaClient } from '../generated/prisma/client';

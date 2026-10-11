@@ -30,7 +30,8 @@
   },
   "overrides": {
     "ts-node-dev": {
-      "chokidar": "^5.0.0"
+      "chokidar": "^5.0.0",
+      "mariadb": "^3.5.4"
     }
   }
 }
