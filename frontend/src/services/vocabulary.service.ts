@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const API_URL =
-    'http://localhost:3002/api/vocabulary';
+    'http://localhost:3002/api/vocabularies';
 
 export const fetchVocabularies = async () => {
     const response =
