@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { fetchVocabularies } from '../services/vocabulary.service';
 // 型だけに使われる場合は、import type を使うと良い
 import type { Vocabulary } from '../types/vocabulary';
+import VocabularyForm from '../components/VocabularyForm';
 
 const VocabularyPage = () => {
     const [vocabularies, setVocabularies] =
@@ -31,6 +32,7 @@ const VocabularyPage = () => {
                     <p>{vocabulary.meaning}</p>
                 </div>
             ))}
+            <VocabularyForm />
         </div>
     );
 };

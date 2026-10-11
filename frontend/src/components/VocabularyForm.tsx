@@ -1,0 +1,124 @@
+import { useState } from 'react';
+import type { SubmitEvent } from 'react';
+import {
+    createVocabulary
+} from '../services/vocabulary.service';
+
+type Props = {
+    onCreated: () => void;
+}
+
+const VocabularyForm = ({ onCreated }: Props) => {
+    const [word, setWord] = useState('');
+    const [meaning, setMeaning] = useState('');
+    const [exampleSentence, setExampleSentence] = useState('');
+    const [partOfSpeech, setPartOfSpeech] = useState('');
+    const [examLevel, setExemLevel] = useState('Eiken-3');
+    const [error, setError] = useState('');
+    const [submitting, setSubmitting] = useState(false);
+
+    const submitHandler = async (
+        e: SubmitEvent<HTMLFormElement>
+    ) => {
+        e.preventDefault();
+        setError('');
+
+        if (!word.trim() || !meaning.trim()) {
+            setError('単語と日本語訳を入力してください。');
+            return
+        }
+
+        try {
+            setSubmitting(true);
+
+            await createVocabulary({
+                word: word.trim(),
+                meaning: meaning.trim(),
+                exampleSentence: exampleSentence.trim() || undefined,
+                partOfSpeech: 'noun', // 仮の値
+                examLevel: examLevel || undefined,
+            });
+
+            setWord('');
+            setMeaning('');
+            setExampleSentence('');
+
+            onCreated();
+        } catch {
+            setError('登録に失敗しました。入力内容やサーバーを確認してください。');
+        } finally {
+            setSubmitting(false);
+        }
+    };
+
+    return (
+        <form onSubmit={submitHandler}>
+            <h2>単語を登録</h2>
+
+            <label>
+                英単語
+                <input
+                    value={word}
+                    onChange={(e) => setWord(e.target.value)}
+                    required />
+            </label>
+
+            <label>
+                日本語訳
+                <input
+                    value={meaning}
+                    onChange={(e) => setMeaning(e.target.value)}
+                    required />
+            </label>
+
+            <label>
+                例文
+                <input
+                    value={exampleSentence}
+                    onChange={(e) => setExampleSentence(e.target.value)}
+                    required />
+            </label>
+
+            <label>
+                品詞
+                <select
+                    value={partOfSpeech}
+                    onChange={(e) => setPartOfSpeech(e.target.value)}
+                >
+                    <option value="noun">名詞</option>
+                    <option value="verb">動詞</option>
+                    <option value="abjective">形容詞</option>
+                    <option value="adverb">副詞</option>
+                    <option value="preposition">前置詞</option>
+                    <option value="pronoun">代名詞</option>
+                    <option value="conjunction">接続詞</option>
+                    <option value="interjection">間投詞</option>
+                </select>
+            </label>
+
+            <label>
+                英語のレベル
+                <select
+                    value={examLevel}
+                    onChange={(e) => setExemLevel(e.target.value)}
+                >
+                    <option value="Eiken-5">英検５級</option>
+                    <option value="Eiken-4">英検４級</option>
+                    <option value="Eiken-3">英検３級</option>
+                    <option value="Eiken-Pre2">英検準２級</option>
+                    <option value="Eiken-2">英検２級</option>
+                    <option value="Eiken-Pre1">英検準１級</option>
+                    <option value="Eiken-1">英検１級</option>
+                </select>
+            </label>
+
+            {error && <p role="alert">{error}</p>}
+
+            <button type="submit">Create Vocabulary
+                {submitting ? '登録中・・・' : "登録"}
+            </button>
+        </form>
+    );
+};
+
+export default VocabularyForm;

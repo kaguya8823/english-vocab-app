@@ -14,3 +14,6 @@ backend 内で npm run dev
 docker で docker compose up -d
 backend 内で npx prisma studio これで Prisma studio を起動
 frontend 内で npm run dev
+
+## 現状の問題
+ポート3002が npm run dev で自動でつながらない
