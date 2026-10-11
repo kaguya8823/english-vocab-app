@@ -12,4 +12,5 @@ backend 内で、npx prisma studio コマンドを入力すると、prisma studi
 ## 起動
 backend 内で npm run dev
 docker で docker compose up -d
-backend 内で npx prisma studio
+backend 内で npx prisma studio これで Prisma studio を起動
+frontend 内で npm run dev

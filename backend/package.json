@@ -24,7 +24,7 @@
     "@types/express": "^5.0.6",
     "@types/node": "^26.6.4",
     "chokidar": "^5.0.0",
-    "prisma": "^8.0.0-rc.22",
+    "prisma": "^7.10.0",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.9.3"
   },
