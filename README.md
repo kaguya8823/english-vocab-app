@@ -8,3 +8,8 @@ https://chatgpt.com/share/6ac797b5-0860-83e8-be60-6b58d6db19ee
 
 ## prisma studio
 backend 内で、npx prisma studio コマンドを入力すると、prisma studio というDB を管理できるページに行ける
+
+## 起動
+backend 内で npm run dev
+docker で docker compose up -d
+backend 内で npx prisma studio
