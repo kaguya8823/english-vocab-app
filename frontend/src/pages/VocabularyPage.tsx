@@ -12,6 +12,10 @@ const VocabularyPage = () => {
 
     const [error, setError] = useState('');
 
+    const [keyword, setKeyword] = useState('');
+
+    const [sortOrder, setSortOrder] = useState('word-asc');
+
     useEffect(() => {
         // 連鎖レンダリング警告を回避するために、初期化 state は必要な時だけ呼ぶ
         // もしくは、非同期処理の直前に配置
@@ -59,12 +63,44 @@ const VocabularyPage = () => {
     } finally {
         setLoading(false);
     }
+
+    // 検索機能
+    const filterdVocabularies = vocabularies.filter((vocabulary) => {
+        const searchText = keyword.trim().toLowerCase();
+
+        return (
+            vocabulary.word.toLowerCase().includes(searchText) ||
+            vocabulary.meaning.toLowerCase().includes(searchText) ||
+            (vocabulary.exampleSentence ?? '')
+                .toLowerCase()
+                .includes(searchText)
+        );
+    });
+
+    // ソート機能
+    const sortedVocabularies = [...filterdVocabularies].sort((a, b) => {
+        switch (sortOrder) {
+            case 'word-desc':
+                return b.word.localeCompare(a.word);
+            
+            case 'newest':
+                return new Date(b.createdAt).getTime()
+                - new Date(a.createdAt).getTime();
+            
+            case 'oldest':
+                return new Date(a.createdAt).getTime()
+                - new Date(b.createdAt).getTime();
+            
+            case 'word-asc':
+            default:
+                return a.word.localeCompare(b.word);
+        }
+    });
 };
 
     return (
         <main>
             <h1>英単語長</h1>
-
             <VocabularyForm onCreated={reloadVocabularies}  />
 
             <h2>登録済みの単語</h2>
@@ -84,6 +120,22 @@ const VocabularyPage = () => {
                     )}
                     <p>品詞：{vocabulary.partOfSpeech}</p>
                     <p>レベル：{vocabulary.examLevel ?? '未設定'}</p>
+                    <input 
+                        type="serch"
+                        placeholder='英単語・日本語訳・例文で検索'
+                        value={keyword}
+                        onChange={(e) => setKeyword(e.target.value)}
+                    />
+                    <select
+                        value={sortOrder}
+                        onChange={(e) => setSortOrder(e.target.value)}
+                    >
+                        <option value="word-asc">英単語 A -&gt; Z</option>
+                        <option value="word-desc">英単語 Z -&gt; A</option>
+                        <option value="newest">登録日が新しい順</option>
+                        <option value="oldest">登録日が古い順</option>
+
+                    </select>
                 </article>
             ))}
         </main>
