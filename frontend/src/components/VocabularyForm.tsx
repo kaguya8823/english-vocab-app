@@ -114,7 +114,7 @@ const VocabularyForm = ({ onCreated }: Props) => {
 
             {error && <p role="alert">{error}</p>}
 
-            <button type="submit">Create Vocabulary
+            <button type="submit">Create 
                 {submitting ? '登録中・・・' : "登録"}
             </button>
         </form>

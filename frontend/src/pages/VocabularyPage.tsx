@@ -8,32 +8,85 @@ const VocabularyPage = () => {
     const [vocabularies, setVocabularies] =
     useState<Vocabulary[]>([]);
 
+    const [loading, setLoading] = useState(true);
+
+    const [error, setError] = useState('');
+
     useEffect(() => {
-        const loadVocabularies = async () => {
+        // 連鎖レンダリング警告を回避するために、初期化 state は必要な時だけ呼ぶ
+        // もしくは、非同期処理の直前に配置
+        let isMounted = true;
+
+        const loadData = async () => {
             try {
+                // 初期化が必要な場合、ここで実行
+                if (isMounted) setError('');
+            
                 const data = await fetchVocabularies();
-                setVocabularies(data);
-            } catch (error) {
-                console.error("Error fetching vocabularies:", error);
+            
+                // コンポーネントがまだ存在している(アンマウントされていない)場合のみ更新
+                if (isMounted) {
+                    setVocabularies(data);
+                }
+            } catch {
+                if (isMounted) {
+                setError('単語一覧を取得できませんでした。');
+                } 
+            } finally {
+                if (isMounted) {
+                    setLoading(false);
+                }
             }
         };
-        loadVocabularies();
-    
-    },[]);
+
+        void loadData();
+
+        // クリーンアップ関数：通信中にユーザーが画面を切り替えた場合のバグ（メモリリーク）を防ぐ
+        return () => {
+            isMounted = false;
+        };
+    },[]) // 最初の一回だけ実行するために、依存配列は空にする
+
+    // 以下の const は、onCreate を呼び出すために必要
+    const reloadVocabularies = async () => {
+    try {
+        setError('');
+        setLoading(true);
+        const data = await fetchVocabularies();
+        setVocabularies(data);
+    } catch {
+        setError('単語一覧を取得できませんでした。');
+    } finally {
+        setLoading(false);
+    }
+};
 
     return (
-        <div>
-            <h1>Vocabulary List</h1>
-            {vocabularies.map((vocabulary) => (
-                <div key=
-                {vocabulary.id}>
-                    <h3>{vocabulary.word}</h3>
+        <main>
+            <h1>英単語長</h1>
 
+            <VocabularyForm onCreated={reloadVocabularies}  />
+
+            <h2>登録済みの単語</h2>
+            {loading && <p>読み込み中・・・</p>}
+            {error && <p role='alert'>{error}</p>}
+
+            {!loading && !error && vocabularies.length === 0 && (
+                <p>まだ単語が登録されていません。</p>
+            )}
+
+            {vocabularies.map((vocabulary) => (
+                <article key={vocabulary.id}>
+                    <h3>{vocabulary.word}</h3>
                     <p>{vocabulary.meaning}</p>
-                </div>
+                    {vocabulary.exampleSentence && (
+                        <p>{vocabulary.exampleSentence}</p>
+                    )}
+                    <p>品詞：{vocabulary.partOfSpeech}</p>
+                    <p>レベル：{vocabulary.examLevel ?? '未設定'}</p>
+                </article>
             ))}
-            <VocabularyForm />
-        </div>
+        </main>
     );
 };
 
