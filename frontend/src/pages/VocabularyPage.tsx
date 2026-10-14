@@ -1,7 +1,11 @@
 import { useState, useEffect, useCallback } from 'react';
 import type { Vocabulary } from '../types/vocabulary';
-import { fetchVocabularies } from '../services/vocabulary.service';
+import {
+    deleteVocabulary,
+    fetchVocabularies,
+} from '../services/vocabulary.service';
 import VocabularyForm from '../components/VocabularyForm';
+import VocabularyEditForm from '../components/VocabularyEditForm';
 
 type SortOrder = 'word-asc' | 'word-desc' | 'newest' | 'oldest';
 
@@ -102,6 +106,13 @@ const VocabularyPage = () => {
         }
     });
 
+    // 編集管理のstate
+    const [editingVocabulary, setEditingVocabulary] =
+        useState<Vocabulary | null>(null);
+    const [deletingVocabularyId, setDeletingVocabularyId] =
+        useState<number | null>(null);
+    const [actionError, setActionError] = useState('');
+
     // 画面表示
     return (
         <main>
@@ -189,54 +200,87 @@ const VocabularyPage = () => {
                     </p>
                 )}
 
+                {actionError && <p role="alert">{actionError}</p>}
+
                 {!loading &&
                     !error &&
                     sortedVocabularies.map((vocabulary) => (
                         <article key={vocabulary.id}>
-                            <h3>{vocabulary.word}</h3>
+                            {editingVocabulary?.id === vocabulary.id ? (
+                                <VocabularyEditForm
+                                    vocabulary={vocabulary}
+                                    onUpdated={async () => {
+                                        setEditingVocabulary(null);
+                                        await loadVocabularies();
+                                    }}
+                                    onCancel={() => setEditingVocabulary(null)}
+                                />
+                            ) : (
+                                <>
+                                    <h3>{vocabulary.word}</h3>
 
-                            <p>
-                                <strong>日本語訳：</strong>
-                                {vocabulary.meaning}
-                            </p>
+                                    <p>
+                                        <strong>日本語訳：</strong>
+                                        {vocabulary.meaning}
+                                    </p>
 
-                            {vocabulary.exampleSentence && (
-                                <p>
-                                    <strong>例文：</strong>
-                                    {vocabulary.exampleSentence}
-                                </p>
+                                    {vocabulary.exampleSentence && (
+                                        <p>
+                                            <strong>例文：</strong>
+                                            {vocabulary.exampleSentence}
+                                        </p>
+                                    )}
+
+                                    <p>
+                                        <strong>品詞：</strong>
+                                        {vocabulary.partOfSpeech}
+                                    </p>
+
+                                    <p>
+                                        <strong>英語のレベル：</strong>
+                                        {vocabulary.examLevel || '未設定'}
+                                    </p>
+
+                                    <hr />
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            setActionError('');
+                                            setEditingVocabulary(vocabulary);
+                                        }}
+                                    >
+                                        編集
+                                    </button>
+
+                                    <button
+                                        type="button"
+                                        disabled={deletingVocabularyId === vocabulary.id}
+                                        onClick={async () => {
+                                            if (!window.confirm(`「${vocabulary.word}」を削除しますか？`)) {
+                                                return;
+                                            }
+
+                                            setActionError('');
+                                            setDeletingVocabularyId(vocabulary.id);
+                                            try {
+                                                await deleteVocabulary(vocabulary.id);
+                                                if (editingVocabulary?.id === vocabulary.id) {
+                                                    setEditingVocabulary(null);
+                                                }
+                                                await loadVocabularies();
+                                            } catch {
+                                                setActionError('単語の削除に失敗しました。');
+                                            } finally {
+                                                setDeletingVocabularyId(null);
+                                            }
+                                        }}
+                                    >
+                                        {deletingVocabularyId === vocabulary.id
+                                            ? '削除中...'
+                                            : '削除'}
+                                    </button>
+                                </>
                             )}
-
-                            <p>
-                                <strong>品詞：</strong>
-                                {vocabulary.partOfSpeech}
-                            </p>
-
-                            <p>
-                                <strong>英語のレベル：</strong>
-                                {vocabulary.examLevel || '未設定'}
-                            </p>
-
-                            <hr />
-                            {/* 編集機能 */}
-                            <button
-                                type="button"
-                                onClick={() => {
-                                    // 編集対象の単語を選択する処理
-                                }}
-                            >
-                                編集
-                            </button>
-
-                            {/* 削除機能 */}
-                            <button
-                                type="button"
-                                onClick={() => {
-                                    // 削除処理を実行する
-                                }}
-                            >
-                                削除
-                            </button>
                         </article>
                     ))}
             </section>

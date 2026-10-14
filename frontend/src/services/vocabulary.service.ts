@@ -29,9 +29,9 @@ export const updateVocabulary = async (
         data: {
             word:             string;
             meaning:          string;
-            exampleSentence?: string;
+            exampleSentence:  string | null;
             partOfSpeech:     string;
-            examLevel?:       string;
+            examLevel:        string | null;
         }
 ) => {
     const response = await axios.put(
