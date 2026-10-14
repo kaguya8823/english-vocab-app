@@ -6,6 +6,7 @@ import {
 } from '../services/vocabulary.service';
 import VocabularyForm from '../components/VocabularyForm';
 import VocabularyEditForm from '../components/VocabularyEditForm';
+import VocabularyStudy from '../components/VocabularyStudy';
 
 type SortOrder = 'word-asc' | 'word-desc' | 'newest' | 'oldest';
 
@@ -133,6 +134,9 @@ const VocabularyPage = () => {
         }
     });
 
+    // 学習モード
+    const [isStudyMode, setIsStudyMode] = useState(false);
+
 
     
     // 画面表示
@@ -141,7 +145,8 @@ const VocabularyPage = () => {
             <h1>英単語長</h1>
             {/* 単語登録フォーム */}
             <section>
-                <VocabularyForm onCreated={loadVocabularies} />
+                <VocabularyForm 
+                onCreated={loadVocabularies} />
             </section>
 
             <hr />
