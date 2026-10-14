@@ -218,9 +218,29 @@ const VocabularyPage = () => {
                             </p>
 
                             <hr />
+                            {/* 編集機能 */}
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    // 編集対象の単語を選択する処理
+                                }}
+                            >
+                                編集
+                            </button>
+
+                            {/* 削除機能 */}
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    // 削除処理を実行する
+                                }}
+                            >
+                                削除
+                            </button>
                         </article>
                     ))}
             </section>
+            
         </main>
     );
 };
