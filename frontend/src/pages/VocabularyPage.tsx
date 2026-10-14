@@ -76,14 +76,18 @@ const VocabularyPage = () => {
         useState<number | null>(null);
     const [actionError, setActionError] = useState('');
 
-    // 絞り込みのstate
+    // 品詞の絞り込みのstate
     const [selectedPartOfSpeech, setSelectedPartOfSpeech] =
+        useState('all');
+    
+    // レベルの絞り込みのstate
+    const [selectedExamLevel, setSelectedExamLevel] =
         useState('all');
 
     // 検索機能
     const searchText = keyword.trim().toLowerCase();
 
-    // 検索機能＆絞り込み処理
+    // 検索機能＆絞り込み処理＆レベル絞り込み
     const filteredVocabularies = vocabularies.filter(
         (vocabulary) => {
             const matchesKeyword =
@@ -95,8 +99,13 @@ const VocabularyPage = () => {
             const matchesPartOfSpeech =
                 selectedPartOfSpeech === 'all' ||
                 vocabulary.partOfSpeech === selectedPartOfSpeech;
+            const matchesExamLevel =
+                selectedExamLevel === 'all' ||
+                vocabulary.examLevel === selectedExamLevel;
                 
-            return matchesKeyword && matchesPartOfSpeech;
+            return matchesKeyword &&
+                matchesPartOfSpeech &&
+                matchesExamLevel;
         }
     );
 
@@ -185,7 +194,7 @@ const VocabularyPage = () => {
                     </select>
                 </div>
 
-                {/* 絞り込み */}
+                {/* 品詞の絞り込み */}
                 <label htmlFor='part-of-speech-filter'>
                     品詞で絞り込む
                 </label>
@@ -203,6 +212,28 @@ const VocabularyPage = () => {
                     <option value='adjective'>形容詞</option>
                     <option value='adverb'>副詞</option>
                     <option value='other'>その他</option>
+                </select>
+
+                {/* レベルの絞り込み */}
+                <label htmlFor='part-of-speech-filter'>
+                    レベルで絞り込む
+                </label>
+
+                <select
+                    id="part-of-examlevel-filter"
+                    value={selectedExamLevel}
+                    onChange={(e) =>
+                        setSelectedExamLevel(e.target.value)
+                    }
+                >
+                    <option value='all'>すべて</option>
+                    <option value="Eiken-5">英検５級</option>
+                    <option value="Eiken-4">英検４級</option>
+                    <option value="Eiken-3">英検３級</option>
+                    <option value="Eiken-Pre2">英検準２級</option>
+                    <option value="Eiken-2">英検２級</option>
+                    <option value="Eiken-Pre1">英検準１級</option>
+                    <option value="Eiken-1">英検１級</option>
                 </select>
 
                 <p>
