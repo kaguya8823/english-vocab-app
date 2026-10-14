@@ -69,18 +69,36 @@ const VocabularyPage = () => {
         };
     },[])
 
+        // 編集管理のstate
+    const [editingVocabulary, setEditingVocabulary] =
+        useState<Vocabulary | null>(null);
+    const [deletingVocabularyId, setDeletingVocabularyId] =
+        useState<number | null>(null);
+    const [actionError, setActionError] = useState('');
+
+    // 絞り込みのstate
+    const [selectedPartOfSpeech, setSelectedPartOfSpeech] =
+        useState('all');
+
     // 検索機能
     const searchText = keyword.trim().toLowerCase();
 
-    const filteredVocabularies = vocabularies.filter((vocabulary) => {
-        return (
-            vocabulary.word.toLowerCase().includes(searchText) ||
-            vocabulary.meaning.toLowerCase().includes(searchText) ||
-            (vocabulary.exampleSentence ?? '')
-                .toLowerCase()
-                .includes(searchText)
-        );
-    });
+    // 検索機能＆絞り込み処理
+    const filteredVocabularies = vocabularies.filter(
+        (vocabulary) => {
+            const matchesKeyword =
+                vocabulary.word.toLowerCase().includes(searchText) ||
+                vocabulary.meaning.toLowerCase().includes(searchText) ||
+                (vocabulary.exampleSentence ?? '')
+                    .toLowerCase()
+                    .includes(searchText);
+            const matchesPartOfSpeech =
+                selectedPartOfSpeech === 'all' ||
+                vocabulary.partOfSpeech === selectedPartOfSpeech;
+                
+            return matchesKeyword && matchesPartOfSpeech;
+        }
+    );
 
     // ソート機能
     const sortedVocabularies = [...filteredVocabularies].sort((a, b) => {
@@ -106,13 +124,8 @@ const VocabularyPage = () => {
         }
     });
 
-    // 編集管理のstate
-    const [editingVocabulary, setEditingVocabulary] =
-        useState<Vocabulary | null>(null);
-    const [deletingVocabularyId, setDeletingVocabularyId] =
-        useState<number | null>(null);
-    const [actionError, setActionError] = useState('');
 
+    
     // 画面表示
     return (
         <main>
@@ -171,6 +184,26 @@ const VocabularyPage = () => {
                         <option value="oldest">登録日の古い順</option>
                     </select>
                 </div>
+
+                {/* 絞り込み */}
+                <label htmlFor='part-of-speech-filter'>
+                    品詞で絞り込む
+                </label>
+
+                <select
+                    id="part-of-speech-filter"
+                    value={selectedPartOfSpeech}
+                    onChange={(e) =>
+                        setSelectedPartOfSpeech(e.target.value)
+                    }
+                >
+                    <option value='all'>すべて</option>
+                    <option value='noun'>名詞</option>
+                    <option value='verb'>動詞</option>
+                    <option value='adjective'>形容詞</option>
+                    <option value='adverb'>副詞</option>
+                    <option value='other'>その他</option>
+                </select>
 
                 <p>
                     表示件数：{sortedVocabularies.length} 件
