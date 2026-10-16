@@ -17,3 +17,8 @@ frontend 内で npm run dev
 ## 今起動
 docker compose up -d  で一括起動可能
 backend 内で npx prisma studio これで Prisma studio を起動
+
+## Playwright
+npm init playwright@lates でインストール
+これも、 prisma どうよう、膨大な量なので、 .gitignore に記述する必要がある。
+だが、上記のコマンドでインストールしたら、自動で .gitignore に記述されていたので問題ないっぽい
