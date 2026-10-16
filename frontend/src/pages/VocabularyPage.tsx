@@ -149,6 +149,16 @@ const VocabularyPage = () => {
                 onCreated={loadVocabularies} />
             </section>
 
+            {/* 学習モードへの切り替え */}
+            {isStudyMode && (
+            <section>
+             <VocabularyStudy
+                vocabularies={sortedVocabularies}
+                onClose={() => setIsStudyMode(false)}
+            />
+            </section>
+            )}
+
             <hr />
 
             {/* 検索・ソートエリア */}
@@ -244,6 +254,14 @@ const VocabularyPage = () => {
                 <p>
                     表示件数：{sortedVocabularies.length} 件
                 </p>
+
+                {/* 学習モードのボタン */}
+                <button
+                    type='button'
+                    onClick={() => setIsStudyMode(true)}
+                >
+                    単語を使った文章を考えてみよう
+                </button>
             </section>
 
             <hr />
