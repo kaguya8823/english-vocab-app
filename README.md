@@ -18,7 +18,17 @@ frontend 内で npm run dev
 docker compose up -d  で一括起動可能
 backend 内で npx prisma studio これで Prisma studio を起動
 
+## Docker コマンド
+• 起動（バックグラウンド）: docker compose up -d
+• ログの確認: docker compose logs -f
+• 停止と削除: docker compose down
+• バージョンの確認: docker compose version
+
 ## Playwright
 npm init playwright@lates でインストール
 これも、 prisma どうよう、膨大な量なので、 .gitignore に記述する必要がある。
 だが、上記のコマンドでインストールしたら、自動で .gitignore に記述されていたので問題ないっぽい
+
+## E2E テストするためのコマンド
+cd frontend 内で、
+npx playwright test tests/vocabulary.spec.ts

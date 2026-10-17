@@ -19,11 +19,16 @@ test('単語の登録・編集・学習・削除が一連の流れで動作す�
     await page.goto('http://localhost:5173/');
 
     // 2.登録フォームを取得
-    const registrationForm = page.locator('form').first(); // ページの最初の特定にあるフォーム名を選択する
+    const registrationForm = page.locator('form').filter({
+        has: page.getByRole('heading', { name: '単語を登録', exact: true}),
+    })
 
     // 単語を登録する
+    await expect(registrationForm).toHaveCount(1);
     await registrationForm.getByLabel('英単語').fill(word);
-    await registrationForm.getByLabel('日本語訳').fill(originalMeaning); // ここは日本語訳の部分
+    await registrationForm
+        .getByRole('textbox', { name: '日本語訳', exact: true})
+        .fill(originalMeaning);
     await registrationForm.getByLabel('例文').fill(example);
 
     // 実際のセレクト欄のラベル・選択肢に合わせて調整する
@@ -44,16 +49,20 @@ test('単語の登録・編集・学習・削除が一連の流れで動作す�
     // 3. 登録した単語を編集する
     await vocabulary.getByRole('button', { name: '編集' }).click();
 
-    await vocabulary.locator('#edit-meaning').fill(updatedMeaning);
+    const editForm = page.locator('form').filter({
+        has: page.getByRole('heading', { name: '単語を編集', exact: true }),
+    });
+    await expect(editForm).toHaveCount(1);
+    await editForm.getByLabel('日本語訳', { exact: true }).fill(updatedMeaning);
 
-    await vocabulary.getByRole('button', { name: '変更を保存'}).click();
+    await editForm.getByRole('button', { name: '変更を保存' }).click();
 
     // 更新後の内容を確認する
     await expect(vocabulary).toContainText(updatedMeaning);
     await expect(vocabulary).not.toContainText(originalMeaning);
 
     // 4. 学習モードで表示する
-    await page.getByRole( 'button', { name: '単語を使った文章を考えてみよう' });
+    await page.getByRole( 'button', { name: '単語を使った文章を考えてみよう' }).click();
 
     // 登録した単語が学習画面にあることを確認する
     await expect(page.getByRole('heading', { name: word })).toBeVisible();
