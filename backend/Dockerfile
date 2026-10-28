@@ -1,5 +1,7 @@
 ## バックエンド用の Dockerfile
-FROM node:22
+FROM node:24.22.1
+
+RUN npm install --global npm@11.19.1
 
 WORKDIR /src
 

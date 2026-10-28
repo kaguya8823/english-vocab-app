@@ -20,6 +20,7 @@ backend 内で npx prisma studio これで Prisma studio を起動
 
 ## Docker コマンド
 • 起動（バックグラウンド）: docker compose up -d
+• Node.js / npm のバージョン変更を反映: docker compose up -d --build
 • ログの確認: docker compose logs -f
 • 停止と削除: docker compose down
 • バージョンの確認: docker compose version
